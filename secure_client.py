@@ -39,7 +39,9 @@ if not args.CA_public_key:
         s.sendall(bytes('done', 'utf-8'))
     print(f"Received public key {CA_public_key} from the certificate authority for verifying certificates")
     CA_public_key = eval(CA_public_key)
+    CA_public_key = eval(CA_public_key)
 else:
+    CA_public_key = eval(args.CA_public_key)
     CA_public_key = eval(args.CA_public_key)
 
 # Add an application-layer header to the message that the VPN can use to forward it
