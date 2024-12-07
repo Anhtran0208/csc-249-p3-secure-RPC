@@ -22,6 +22,8 @@ if args.public_key == None:
 public_key = args.public_key
 private_key = public_key[1] - public_key[0]
 
+print(f"Certificate Authority started using public key '{public_key}' and private key '{private_key}'")
+
 def sign_certificate(certificate):
     return 'D' + cryptgraphy_simulator.public_key_encrypt((private_key, public_key[1]), certificate)[1:]
 

@@ -39,9 +39,17 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
             print(f"server connection established, sending message '{message}'")
             server_socket.sendall(bytes(message, 'utf-8'))
             print("message sent to server, waiting for reply")
-            data = server_socket.recv(1024)
-            print(f"Received server response: '{data!r}' [{len(data)} bytes]")
-        print("Forwarding server response to client")
-        client_conn.sendall(data)
+            while True:
+                data = server_socket.recv(1024)
+                if not data:
+                    break
+                print(f"Received server response: '{data!r}' [{len(data)} bytes], forwarding to client")
+                client_conn.sendall(data)
+                data = client_conn.recv(1024)
+                if not data:
+                    break
+                print(f"Received client message: '{data!r}' [{len(data)} bytes], forwarding to server")
+                server_socket.sendall(data)
+
 
 print("VPN is done!")

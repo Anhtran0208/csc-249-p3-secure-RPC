@@ -1,0 +1,32 @@
+1. Overview of the application 
+This is the project to build a simulated secure client and server communicating through VPN using a TLS-like handshake. 
+Overview of the process:
+- When the client request TLS hanshake, the server will send a signed certificate to the client.
+- The client receives the signed certificate and verify it. 
+- If the verification is sucsessful, it will generate a symmetric key, encrypt it, and send to the server.
+- The server receives the encrypted symmetric key from the client and decrypt it
+
+2. Format of unsigned certificate 
+<IP_address>, <port_number>, <first public_key>, <second public_key>
+Example: 127.0.0.1, 5001, 50727, 56533
+
+3. Example output:
+- Message from client: Hello, secure world!
+- Encrypted message sent to the server: HMAC_97131[symmetric_24379[Hello, secure world!]]
+- Server: 
+    - Encrypted key received from client: E_(50727, 56533)[24379]
+    - Decrypted key: 24379
+4. Walkthrough of the steps of a TLS handshake
+- Client request handshake to server 
+- When the server receives the handshake request, it sends to client the signed certificate. 
+- The client will verify that certificate using CA's public key
+- If the verification is successful, the client will generate, encrypt symmetric key using the server's public key to make sure that only server can decrypt the key, and send it to server.
+- The server receives the encrypted key and decrypts it.
+5. How to run this code:
+python3 certificate_authority.py --CA_IP 127.0.0.1 --CA_port 5000
+python secure_server.py --server_IP 127.0.0.1 --server_port 5001 --CA_IP 127.0.0.1 --CA_port 5000
+python secure_client.py --server_IP 127.0.0.1 --server_port 5001 --VPN_IP 127.0.0.1 --VPN_port 5001 --CA_IP 127.0.0.1 --CA_port 5000 --message <add your message in "">
+6. Discussion of eval function:
+Eval function is used to parse the encrypted symmetric key from the client, this may be vulnerable since hackers can inject malicious code here. 
+7. Acknowledgements: 
+This assignment is completed with the help of Instructor Albert Williams. Thank you for spending time answering our questions and fixing the code to make sure it works.
